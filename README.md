@@ -38,21 +38,28 @@ Just like Laravel in PHP, Pyavel helps you manage routes, controllers, helpers, 
 
 ```
 pyavel/
-├── main.py                 # Clean entry point
-├── bootstrap.py            # Global loader (autoload, config, helpers)
-├── autoloader.py           # Adds all necessary paths
-├── helpers.py              # Global helper functions (dd, config, etc.)
-├── config/
-│   └── settings.json       # Your app settings and ENV info
-├── app/
-│   ├── controllers/        # Laravel-style controllers
-│   ├── models/             # Optional models
-│   └── services/           # Reusable service classes
-├── core/
-│   └── router.py           # Mini-router to resolve and call controllers
-└── vendor/                 # External or local packages
-```
-
+├── public/                   # Laravel-like public folder
+│   └── main.py               # 🎯 Entry point (.exe or python)
+├── bramha/                   # Core framework engine (like Laravel's bootstrap + vendor)
+│   ├── bootstrap.py          # Loads autoloader, config, globals
+│   ├── autoloader.py
+│   ├── helpers.py
+│   ├── kernel.py             # Core app kernel (service handling, booting)
+│   ├── route.py              # Core Route class that loads from routes/*
+│   └── ...                   # base_model, traits, service loader, etc.
+├── core/                     # Optional: custom app kernel, artisan, etc.
+│   └── (optional main.py)    # CLI entry if needed
+├── app/                      # Application logic
+│   ├── controllers/
+│   ├── models/
+│   └── services/
+├── routes/                   # 📂 User-defined routes
+│   ├── web.py
+│   ├── api.py
+├── config/                   # Settings / env
+│   └── settings.json
+├── vendor/                   # External packages
+└── README.md
 ---
 
 ### 🚀 Getting Started
