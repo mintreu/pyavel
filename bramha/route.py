@@ -1,0 +1,56 @@
+# bramha/route.py
+import os
+import importlib.util
+
+class Router:
+    registered_routes = []  # Stores all route definitions for FastAPI registration
+    routes = {"GET": {}, "POST": {}, "PUT": {}, "DELETE": {}}
+
+    @classmethod
+    def _register(cls, method, path, action):
+        cls.routes[method][path] = action
+        cls.registered_routes.append((method, path, action))
+        print(f"[*] Registered {method} route: {path} -> {action}")
+
+    @classmethod
+    def get(cls, path, action):
+        cls._register("GET", path, action)
+
+    @classmethod
+    def post(cls, path, action):
+        cls._register("POST", path, action)
+
+    @classmethod
+    def put(cls, path, action):
+        cls._register("PUT", path, action)
+
+    @classmethod
+    def delete(cls, path, action):
+        cls._register("DELETE", path, action)
+
+    @classmethod
+    def resolve(cls, method, path):
+        return cls.routes.get(method, {}).get(path, None)
+
+    @classmethod
+    def register_routes(cls):
+        routes_dir = os.path.join(os.path.dirname(__file__), "..", "routes")
+        if not os.path.exists(routes_dir):
+            print("[X] Routes directory not found!")
+            return
+        for filename in os.listdir(routes_dir):
+            if filename.endswith(".py") and filename != "__init__.py":
+                cls._load_route_file(routes_dir, filename)
+        print("[OK] All routes registered successfully!")
+
+    @classmethod
+    def _load_route_file(cls, routes_dir, filename):
+        route_name = filename[:-3]
+        route_path = os.path.join(routes_dir, filename)
+        try:
+            spec = importlib.util.spec_from_file_location(route_name, route_path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            print(f"[*] Loaded routes from {filename}")
+        except Exception as e:
+            print(f"[X] Error loading {filename}: {e}")

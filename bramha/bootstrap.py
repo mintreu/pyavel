@@ -1,11 +1,14 @@
 import inspect
 import os
+from fastapi import FastAPI
+
 # Assign root directory (Parent of bramha/)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
-def initialize_framework():
+# Main Function Called From main.py
+def initialize_framework() -> FastAPI:
     """
-    Initializes the Pyavel framework by resolving paths, classes, controllers, models, DB, views, cache, etc.
+    Initializes the Pyavel framework and returns a FastAPI app instance.
     """
     print("[*] Initializing Pyavel framework via bootstrap...")
 
@@ -27,17 +30,29 @@ def initialize_framework():
 
     print("[*] Global helper functions registered!")
 
-    # Use the config() shortcut now
-    dd(builtins.__CONFIGS__)  # This will print the entire configuration object and exit.
+    # # Initialize core kernel
+    # from bramha.kernel import Kernel
+    # Kernel.boot()
 
-    dd(config("app.app_name"))  # → 'Pyavel'
+    # Prepare FastAPI app
+    app = FastAPI()
 
     # Register routes dynamically
     from bramha.route import Router
     Router.register_routes()
 
-    # Initialize core kernel
-    from bramha.kernel import Kernel
-    Kernel.boot()
+    # Register Laravel-style routes to FastAPI
+    for method, path, handler in Router.registered_routes:
+        if method == "GET":
+            app.get(path)(handler)
+        elif method == "POST":
+            app.post(path)(handler)
+        elif method == "PUT":
+            app.put(path)(handler)
+        elif method == "DELETE":
+            app.delete(path)(handler)
+        else:
+            print(f"[X] Unsupported HTTP method: {method} for path: {path}")
 
     print("[OK] Framework initialized successfully!")
+    return app

@@ -3,10 +3,9 @@ import sys
 import os
 
 project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-# Ensure Python recognizes pyavel/ and its subdirectories
 sys.path.insert(0, project_root)
 
-from core.main import start_framework  # Import the method from core/main.py
+from core.main import start_framework
 
 if __name__ == "__main__":
-    start_framework()  # Call the core execution method
+    start_framework()
