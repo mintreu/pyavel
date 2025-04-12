@@ -6,8 +6,9 @@ set PYTHON_PATH_FILE=vendor\python_path.txt
 
 :: Check if the portable Python path is saved
 if exist "%PYTHON_PATH_FILE%" (
+    timeout 1
     echo [*] Reading Python path from "%PYTHON_PATH_FILE%"...
-
+    timeout 3
     :: Directly read the first line of the file
     set "PYTHON_EXEC="
     for /f "delims=" %%a in ('type "%PYTHON_PATH_FILE%"') do (
@@ -23,10 +24,14 @@ if exist "%PYTHON_PATH_FILE%" (
 
 :check_path
 echo [*] Raw Python path read (direct): "%PYTHON_EXEC%"
-
+timeout 1
 :: Check if the Python executable exists
 if exist "%PYTHON_EXEC%" (
     echo [*] Using registered Python from vendor...
+    echo [**********************************************]
+    echo [************* APPLICATION STARTING ***********]
+    echo [**********************************************]
+    timeout 1
     "%PYTHON_EXEC%" public\main.py
     exit /b
 ) else (
