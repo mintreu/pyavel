@@ -105,15 +105,28 @@ exit /b
 :: ────────────────────────────────────────────────────────────────
 
 :register_python_path
+if not exist vendor\ (
+    mkdir vendor
+)
 if not exist vendor\python\ (
     mkdir vendor\python
 )
-if not exist vendor\portable_python_path.txt (
+if not exist vendor\python_path.txt (
     echo Creating portable Python path registry...
-    echo. > vendor\portable_python_path.txt
+    echo. > vendor\python_path.txt
 )
-echo %1 > vendor\portable_python_path.txt
+
+:: Remove leading/trailing quotes and spaces from the input path
+set "PYTHON_PATH=%~1"
+
+echo "%PYTHON_PATH%" > vendor\python_path.txt
 exit /b
+
+
+
+
+
+
 
 :download_and_extract_python
 set "PYTHON_ZIP=python-3.12.0-embed-amd64.zip"
