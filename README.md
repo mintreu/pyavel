@@ -80,7 +80,7 @@ python core/main.py
 ###  How the Project Runs
 #### Public Entry (public/main.py): Acts as a basic launcher but doesn’t contain special logic.
 ```bash
-python pubnlic/main.py
+python public/main.py
 ```
 #### Core Execution (core/main.py): This is the actual entry point that initializes the framework and loads the necessary components.
 ```bash
