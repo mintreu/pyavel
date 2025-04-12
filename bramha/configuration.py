@@ -4,7 +4,7 @@ import importlib.util
 
 def load_config(root_dir):
     """
-    Loads all configuration files inside the `config/` directory and merges them into a single dictionary.
+    Loads all configuration files inside the `config/` directory and ensures all values are stored properly.
     """
     config_dir = os.path.join(root_dir, "config")
     all_config = {}
@@ -18,7 +18,8 @@ def load_config(root_dir):
     if os.path.exists(json_config_path):
         with open(json_config_path, "r") as json_file:
             try:
-                all_config["settings"] = json.load(json_file)
+                json_data = json.load(json_file)
+                all_config["settings"] = json_data  # Store as-is
                 print("[*] Loaded settings.json")
             except json.JSONDecodeError:
                 print("[X] Error parsing settings.json. Check JSON formatting.")
@@ -34,8 +35,15 @@ def load_config(root_dir):
                 module = importlib.util.module_from_spec(spec)
                 spec.loader.exec_module(module)
 
-                if hasattr(module, "CONFIG"):  # Ensure it has a CONFIG dictionary
-                    all_config[config_name] = module.CONFIG
+                if hasattr(module, "CONFIG"):  # Ensure CONFIG is present
+                    config_data = module.CONFIG
+
+                    # If CONFIG is a list, store it as is
+                    if isinstance(config_data, (dict, list)):
+                        all_config[config_name] = config_data
+                    else:
+                        print(f"[X] Invalid CONFIG format in {config_name}.py. Must be dict or list.")
+
                     print(f"[*] Loaded {config_name}.py")
 
             except Exception as e:

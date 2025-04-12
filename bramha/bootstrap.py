@@ -1,29 +1,7 @@
-import os
-import builtins
 import inspect
-import bramha.helpers
-from bramha.karigar import main  # Import main from karigar
-
-# Assign root directory (Parent of `bramha/`)
+import os
+# Assign root directory (Parent of bramha/)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-def load_helpers():
-    """
-    Registers all helper functions globally into Python's builtins.
-    Automatically adds every function defined in `bramha.helpers`.
-    """
-    for name, func in inspect.getmembers(bramha.helpers, inspect.isfunction):
-        builtins.__dict__[name] = func  # Add each function dynamically
-    print("[*] Global helper functions registered!")
-
-
-
-def run_karigar():
-    """
-    Bridge function to run the karigar main function.
-    Future modifications or pre-processing steps can be added here.
-    """
-    main()  # Execute main from karigar
 
 def initialize_framework():
     """
@@ -31,19 +9,28 @@ def initialize_framework():
     """
     print("[*] Initializing Pyavel framework via bootstrap...")
 
-
-    # Register global helpers
-    load_helpers()
-
-    dd('hello');
-
-    # Autoload dependencies safely without cyclic imports
-    from bramha.autoloader import load_dependencies
-    load_dependencies(ROOT_DIR)
-
     # Load configurations
     from bramha.configuration import load_config
-    load_config(ROOT_DIR)
+    all_configs = load_config(ROOT_DIR)
+
+    # Store in builtins for global access if needed
+    import builtins
+    builtins.configs = all_configs
+
+    # Load helper methods and pass the config
+    import bramha.helpers
+    bramha.helpers.load_helpers(ROOT_DIR, all_configs)
+
+    # Register all helper functions into builtins
+    for name, func in inspect.getmembers(bramha.helpers, inspect.isfunction):
+        builtins.__dict__[name] = func
+
+    print("[*] Global helper functions registered!")
+
+    # Use the config() shortcut now
+    dd(builtins.__CONFIGS__)  # This will print the entire configuration object and exit.
+
+    dd(config("app.app_name"))  # → 'Pyavel'
 
     # Register routes dynamically
     from bramha.route import Router
