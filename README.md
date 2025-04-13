@@ -91,7 +91,7 @@ python core/main.py
 
 ```python
 from core.router import Router
-from app.controllers.UserController import UserController
+from app.Http.Controllers.UserController import UserController
 
 Router.add("/login", UserController().login)
 ```
@@ -101,7 +101,7 @@ Router.add("/login", UserController().login)
 ### 💻 Example Controller
 
 ```python
-# app/controllers/UserController.py
+# app/Controllers/UserController.py
 
 class UserController:
     def login(self):
