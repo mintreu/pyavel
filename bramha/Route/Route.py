@@ -1,56 +1,84 @@
-# bramha/Route.py
+# bramha/Route/Route.py
 import os
 import importlib.util
+from typing import List, Dict
 
-class Router:
-    registered_routes = []  # Stores all route definitions for FastAPI registration
-    routes = {"GET": {}, "POST": {}, "PUT": {}, "DELETE": {}}
 
-    @classmethod
-    def _register(cls, method, path, action):
-        cls.routes[method][path] = action
-        cls.registered_routes.append((method, path, action))
-        print(f"[*] Registered {method} route: {path} -> {action}")
+class RouteManager:
+    routes = []
 
-    @classmethod
-    def get(cls, path, action):
-        cls._register("GET", path, action)
+    def __init__(self):
+        self.local_routes = []
 
-    @classmethod
-    def post(cls, path, action):
-        cls._register("POST", path, action)
+    def _add_route(self, method, path, handler):
+        route = {
+            "method": method,
+            "path": path,
+            "handler": handler,
+            "name": None,
+            "middleware": None,
+            "parameters": self.extract_parameters(path),
+            "sign_route": False  # default is False
+        }
+        self.local_routes.append(route)
+        return self
 
-    @classmethod
-    def put(cls, path, action):
-        cls._register("PUT", path, action)
+    def get(self, path, handler):
+        return self._add_route("GET", path, handler)
 
-    @classmethod
-    def delete(cls, path, action):
-        cls._register("DELETE", path, action)
+    def post(self, path, handler):
+        return self._add_route("POST", path, handler)
 
-    @classmethod
-    def resolve(cls, method, path):
-        return cls.routes.get(method, {}).get(path, None)
+    def put(self, path, handler):
+        return self._add_route("PUT", path, handler)
 
-    @classmethod
-    def register_routes(cls,ROOT_DIR):
-        routes_dir = os.path.join(ROOT_DIR, "routes")
-        if not os.path.exists(routes_dir):
-            print("[X] Routes directory not found!")
-            return
+    def patch(self, path, handler):
+        return self._add_route("PATCH", path, handler)
+
+    def delete(self, path, handler):
+        return self._add_route("DELETE", path, handler)
+
+    def options(self, path, handler):
+        return self._add_route("OPTIONS", path, handler)
+
+    def any(self, path, handler):
+        for method in ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]:
+            self._add_route(method, path, handler)
+        return self
+
+    def name(self, route_name):
+        self.local_routes[-1]["name"] = route_name
+        return self
+
+    def signed(self):
+        self.local_routes[-1]["sign_route"] = True
+        return self
+
+    def unsigned(self):
+        self.local_routes[-1]["sign_route"] = False
+        return self
+
+    def middleware(self, middleware_class):
+        self.local_routes[-1]["middleware"] = middleware_class
+        return self
+
+    def register_routes(self, root_dir):
+        routes_dir = os.path.join(root_dir, "routes")
         for filename in os.listdir(routes_dir):
-            if filename.endswith(".py") and filename != "__init__.py":
-                cls._load_route_file(routes_dir, filename)
-        print("[OK] All routes registered successfully!")
+            if filename.endswith(".py"):
+                filepath = os.path.join(routes_dir, filename)
+                spec = importlib.util.spec_from_file_location("dynamic_routes", filepath)
+                module = importlib.util.module_from_spec(spec)
+                spec.loader.exec_module(module)
+        self.routes.extend(self.local_routes)
 
-    @classmethod
-    def _load_route_file(cls, routes_dir, filename):
-        route_name = filename[:-3]
-        route_path = os.path.join(routes_dir, filename)
-        try:
-            spec = importlib.util.spec_from_file_location(route_name, route_path)
-            module = importlib.util.module_from_spec(spec)
-            spec.loader.exec_module(module)
-            print(f"[*] Loaded routes from {filename}")
-        except Exception as e:
-            print(f"[X] Error loading {filename}: {e}")
+    def getAllRoutes(self) -> List[Dict]:
+        return self.routes
+
+    def extract_parameters(self, path):
+        import re
+        return re.findall(r'{(\w+):\s*\w+}', path)
+
+
+# Global Route Singleton
+Route = RouteManager()

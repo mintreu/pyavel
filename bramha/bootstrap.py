@@ -1,9 +1,66 @@
 import inspect
 import os
-from fastapi import FastAPI
+import re
+from fastapi import FastAPI, Depends
+from functools import wraps
+
+from bramha.Route.Route import Route
 
 # Assign root directory (Parent of bramha/)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+# Convert `{id: id}` to `{id}` for FastAPI compatibility
+def convert_path(path):
+    return re.sub(r'{(\w+):\s*\w+}', r'{\1}', path)
+
+# Wrap handler to safely attach metadata
+from inspect import iscoroutinefunction
+
+def wrap_handler(handler, sign_route=False, route_name=None):
+    if iscoroutinefunction(handler):
+        @wraps(handler)
+        async def wrapper(*args, **kwargs):
+            return await handler(*args, **kwargs)
+    else:
+        @wraps(handler)
+        def wrapper(*args, **kwargs):
+            return handler(*args, **kwargs)
+
+    wrapper.__sign_route__ = sign_route
+    wrapper.__route_name__ = route_name
+    return wrapper
+
+
+# Dynamically register all routes to FastAPI
+def register_fastapi_routes(app, all_routes):
+    for route in all_routes:
+        middleware = route.get("middleware")
+        deps = [Depends(middleware)] if middleware else []
+
+        method = route.get("method")
+        path = convert_path(route.get("path"))
+        handler = route.get("handler")
+        route_name = route.get("name")
+        sign_route = route.get("sign_route", False)
+
+        wrapped_handler = wrap_handler(handler, sign_route, route_name)
+
+        route_params = {
+            "dependencies": deps,
+        }
+
+        if route_name:
+            route_params["name"] = route_name
+
+        # If method is "ANY", register all supported methods
+        if method == "ANY":
+            for m in ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]:
+                getattr(app, m.lower())(path, **route_params)(wrapped_handler)
+        else:
+            method_func = getattr(app, method.lower(), None)
+            if method_func:
+                method_func(path, **route_params)(wrapped_handler)
+
 
 # Main Function Called From main.py
 def initialize_framework() -> FastAPI:
@@ -30,32 +87,13 @@ def initialize_framework() -> FastAPI:
 
     print("[*] Global helper functions registered!")
 
-    # # Initialize core kernel
-    # from bramha.kernel import Kernel
-    # Kernel.boot()
-
     # Prepare FastAPI app
     app = FastAPI()
 
-    # Register routes dynamically
-    from bramha.Route.Route import Router
-    Router.register_routes(ROOT_DIR)
-
-    # all_routes = Router.list_routes()
-    # dd(all_routes)
-
-    # Register Laravel-style routes to FastAPI
-    for method, path, handler in Router.registered_routes:
-        if method == "GET":
-            app.get(path)(handler)
-        elif method == "POST":
-            app.post(path)(handler)
-        elif method == "PUT":
-            app.put(path)(handler)
-        elif method == "DELETE":
-            app.delete(path)(handler)
-        else:
-            print(f"[X] Unsupported HTTP method: {method} for path: {path}")
+    # Register Laravel-style routes
+    Route.register_routes(ROOT_DIR)
+    all_routes = Route.getAllRoutes()
+    register_fastapi_routes(app, all_routes)
 
     print("[OK] Framework initialized successfully!")
     return app

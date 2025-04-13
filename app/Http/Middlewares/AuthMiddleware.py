@@ -1,11 +1,22 @@
-from fastapi import Request
+from fastapi import Request, HTTPException, status
 
 class AuthMiddleware:
-    async def handle(self, request: Request, call_next):
-        """Middleware logic before reaching the endpoint"""
-        dd('sadf')
-        if not request.cookies.get("user_token"):
-            from fastapi.responses import JSONResponse
-            return JSONResponse(status_code=401, content={"message": "Unauthorized"})
+    def __init__(self):
+        pass
 
-        return await call_next(request)  # Proceed to the actual route handler
+    def __call__(self, request: Request):
+        print("AuthMiddleware called!")
+
+        # EXAMPLE AUTH CHECK:
+        auth_header = request.headers.get("Authorization")
+
+        if not auth_header or auth_header != "Bearer super-secret-token":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Unauthorized",
+            )
+
+        # Optionally attach user info to request.state
+        request.state.user = {"id": 1, "name": "Test User"}
+
+        return True

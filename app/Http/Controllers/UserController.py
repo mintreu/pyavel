@@ -1,18 +1,21 @@
-# app/Controllers/UserController.py
-from fastapi.responses import JSONResponse
+from fastapi import Request
 
 class UserController:
-    def login(self):
-        return JSONResponse({"message": "Login page"})
+    async def login(self, request: Request):
+        return {"message": "Login successful"}
 
-    def register(self):
-        return JSONResponse({"message": "Register page"})
+    def register(self, request: Request):
+        return {"message": "Register successful"}
 
-    def dashboard(self):
-        return JSONResponse({"message": "User dashboard"})
+    def update(self, request: Request):
+        return {"message": "Update successful"}
 
-    def do_login(self):
-        return JSONResponse({"message": "Logging in..."})
+    def delete(self, request: Request):
+        return {"message": "Delete successful"}
 
-    def logout(self):
-        return JSONResponse({"message": "Logged out"})
+    async def dashboard(self, request: Request):
+        return {"message": "Dashboard"}
+
+    async def read(self, request: Request, name: str):
+        # Just prints the name from the URL
+        return {"message": f"User check for: {name}"}
