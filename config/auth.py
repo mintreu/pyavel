@@ -45,12 +45,12 @@ CONFIG = {
 
     'providers': {
         'users': {
-            'driver': 'eloquent',  # The driver to use for retrieving user models.
-            'model': os.getenv('AUTH_MODEL', 'app.models.User'),  # Path to the user model (e.g., User class in a Django model).
+            'driver': 'eloquent',  # The driver to use for retrieving user Models.
+            'model': os.getenv('AUTH_MODEL', 'app.Models.User'),  # Path to the user model (e.g., User class in a Django model).
         },
         'admins': {
-            'driver': 'eloquent',  # The driver to use for retrieving admin models.
-            'model': 'app.models.Admin',  # Path to the admin model.
+            'driver': 'eloquent',  # The driver to use for retrieving admin Models.
+            'model': 'app.Models.Admin',  # Path to the admin model.
         },
         # Uncomment for database-driven user authentication
         # 'users': {

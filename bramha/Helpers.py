@@ -41,3 +41,10 @@ def dd(*args):
         print("→")
         pp.pprint(arg)
     exit()
+
+
+def is_dev():
+    return config("server.env", "production") == "development"
+
+def is_prod():
+    return config("server.env", "development") == "production"

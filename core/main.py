@@ -2,7 +2,7 @@
 import os
 import sys
 
-from bramha.helpers import config
+from bramha.Helpers import config, is_prod
 
 
 def ensure_root():
@@ -27,4 +27,4 @@ def start_framework():
     env = config("server.env", "production")
 
     import uvicorn
-    uvicorn.run(app, host=host, port=port, reload=(env == "development"))
+    uvicorn.run(app, host=host, port=port, reload=is_prod())

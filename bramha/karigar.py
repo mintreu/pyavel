@@ -41,8 +41,8 @@ def main():
 # ─── Generator ──────────────────────────────────────────
 def make_stub(name, type_):
     folder = {
-        "controller": "app/controllers",
-        "model": "app/models",
+        "controller": "app/Controllers",
+        "model": "app/Models",
         "service": "app/services"
     }.get(type_)
 

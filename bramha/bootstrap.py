@@ -13,7 +13,7 @@ def initialize_framework() -> FastAPI:
     print("[*] Initializing Pyavel framework via bootstrap...")
 
     # Load configurations
-    from bramha.configuration import load_config
+    from bramha.Configuration import load_config
     all_configs = load_config(ROOT_DIR)
 
     # Store in builtins for global access if needed
@@ -21,11 +21,11 @@ def initialize_framework() -> FastAPI:
     builtins.configs = all_configs
 
     # Load helper methods and pass the config
-    import bramha.helpers
-    bramha.helpers.load_helpers(ROOT_DIR, all_configs)
+    import bramha.Helpers
+    bramha.Helpers.load_helpers(ROOT_DIR, all_configs)
 
     # Register all helper functions into builtins
-    for name, func in inspect.getmembers(bramha.helpers, inspect.isfunction):
+    for name, func in inspect.getmembers(bramha.Helpers, inspect.isfunction):
         builtins.__dict__[name] = func
 
     print("[*] Global helper functions registered!")
@@ -38,8 +38,11 @@ def initialize_framework() -> FastAPI:
     app = FastAPI()
 
     # Register routes dynamically
-    from bramha.route import Router
+    from bramha.Route import Router
     Router.register_routes()
+
+    # all_routes = Router.list_routes()
+    # dd(all_routes)
 
     # Register Laravel-style routes to FastAPI
     for method, path, handler in Router.registered_routes:

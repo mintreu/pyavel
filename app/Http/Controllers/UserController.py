@@ -1,4 +1,4 @@
-# app/controllers/UserController.py
+# app/Controllers/UserController.py
 from fastapi.responses import JSONResponse
 
 class UserController:
