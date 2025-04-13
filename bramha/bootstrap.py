@@ -38,8 +38,8 @@ def initialize_framework() -> FastAPI:
     app = FastAPI()
 
     # Register routes dynamically
-    from bramha.Route import Router
-    Router.register_routes()
+    from bramha.Route.Route import Router
+    Router.register_routes(ROOT_DIR)
 
     # all_routes = Router.list_routes()
     # dd(all_routes)
