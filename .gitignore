@@ -1,7 +1,34 @@
-# Ignore IDE/editor specific files
+# -------------------------
+# Ignore Python bytecode and cache files
+# -------------------------
+__pycache__/
+*.py[cod]
+*$py.class
+
+# -------------------------
+# Backup and temp files
+# -------------------------
+*~
+*.bak
+*.swp
+*.swo
+*.tmp
+
+# -------------------------
+# Virtual environments
+# -------------------------
+env/
+venv/
+ENV/
+.venv/
+.ENV/
+
+# -------------------------
+# IDE settings
+# -------------------------
 .idea/
 .vscode/
-.code/
 
+# -------------------------
 # Ignore vendor directory to prevent committing auto-created files
 vendor/

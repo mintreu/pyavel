@@ -25,6 +25,3 @@ Route.get("/secure", user.dashboard).middleware(AuthMiddleware()).signed().name(
 
 Route.get("/user/check/{name: name}", user.read).middleware(AuthMiddleware())
 
-
-
-
