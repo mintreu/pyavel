@@ -34,7 +34,7 @@ class Router:
 
     @classmethod
     def register_routes(cls):
-        routes_dir = os.path.join(os.path.dirname(__file__), "..", "routes")
+        routes_dir = os.path.join(ROOT_DIR, "routes")
         if not os.path.exists(routes_dir):
             print("[X] Routes directory not found!")
             return

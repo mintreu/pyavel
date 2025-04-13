@@ -31,4 +31,4 @@ def start_framework():
     # Dynamically build module path like: 'yourproject.core.main:app'
     module_path = __name__ + ":app"
 
-    uvicorn.run(module_path, host=host, port=port, reload=is_prod())
+    uvicorn.run(module_path, host=host, port=port, reload=is_dev())
