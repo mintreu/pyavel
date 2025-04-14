@@ -1,6 +1,19 @@
 #!/usr/bin/env python3
 
-from bramha.bootstrap import run_karigar
+# from bramha.bootstrap import run_karigar
+#
+# from famework.bootstrap import App
+#
+# if __name__ == "__main__":
+#     run_karigar()  # Calls the bootstrap function
+
+
+#!/usr/bin/env python
+
+#!/usr/bin/env python
+
+from vedix.console.KarigarKernel import KarigarKernel
 
 if __name__ == "__main__":
-    run_karigar()  # Calls the bootstrap function
+    kernel = KarigarKernel()
+    kernel.handle()

@@ -30,7 +30,7 @@ def load_dependencies(root_path):
 def load_recursive_modules(directory, package_name):
     """
     Recursively scans directories and dynamically imports all Python files inside.
-    This allows automatic loading of deeply nested Controllers, Models, and other framework components.
+    This allows automatic loading of deeply nested Controllers, Models, and other famework components.
     """
     if not os.path.exists(directory):
         print(f"[!] Skipping {package_name}: Directory '{directory}' not found.")

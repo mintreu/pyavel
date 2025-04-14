@@ -4,9 +4,10 @@ import re
 from fastapi import FastAPI, Depends
 from functools import wraps
 
-from bramha.Route.Route import Route
+from famework import routing
+from famework.routing import Route
 
-# Assign root directory (Parent of bramha/)
+# Assign root directory (Parent of famework/)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 
 # Convert `{id: id}` to `{id}` for FastAPI compatibility
@@ -65,12 +66,12 @@ def register_fastapi_routes(app, all_routes):
 # Main Function Called From main.py
 def initialize_framework() -> FastAPI:
     """
-    Initializes the Pyavel framework and returns a FastAPI app instance.
+    Initializes the famework famework and returns a FastAPI app instance.
     """
-    print("[*] Initializing Pyavel framework via bootstrap...")
+    print("[*] Initializing famework famework via bootstrap...")
 
     # Load configurations
-    from bramha.Configuration import load_config
+    from famework.Foundation.Configuration.Configuration import load_config
     all_configs = load_config(ROOT_DIR)
 
     # Store in builtins for global access if needed
@@ -78,11 +79,11 @@ def initialize_framework() -> FastAPI:
     builtins.configs = all_configs
 
     # Load helper methods and pass the config
-    import bramha.Helpers
-    bramha.Helpers.load_helpers(ROOT_DIR, all_configs)
+    import famework.Foundation.helpers
+    famework.Foundation.helpers.load_helpers(ROOT_DIR, all_configs)
 
     # Register all helper functions into builtins
-    for name, func in inspect.getmembers(bramha.Helpers, inspect.isfunction):
+    for name, func in inspect.getmembers(famework.Foundation.helpers, inspect.isfunction):
         builtins.__dict__[name] = func
 
     print("[*] Global helper functions registered!")
@@ -97,3 +98,7 @@ def initialize_framework() -> FastAPI:
 
     print("[OK] Framework initialized successfully!")
     return app
+
+
+class App:
+    pass

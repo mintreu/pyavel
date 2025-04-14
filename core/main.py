@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 import os
 import sys
-import importlib.util
 
-from bramha.Helpers import config, is_prod, is_dev
+from famework.Foundation.helpers import config, is_prod
+
 
 def ensure_root():
     caller_file = os.path.abspath(sys.argv[0])
@@ -13,14 +13,14 @@ def ensure_root():
 
 ensure_root()
 
-from bramha.bootstrap import initialize_framework
+from famework.bootstrap import initialize_framework
 
 # ✅ Export app for uvicorn
 app = initialize_framework()
 
 def start_framework():
     """
-    Starts the Pyavel framework and launches the FastAPI server using config-based host and port.
+    Starts the famework famework and launches the FastAPI server using config-based host and port.
     """
     host = config("server.host", "127.0.0.1")
     port = int(config("server.port", 8000))

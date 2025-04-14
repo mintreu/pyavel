@@ -1,0 +1,6 @@
+# {{ class }}.py
+from vedix.http.Request import Request
+
+class {{ class }}:
+    def index(self, request: Request):
+        return "This is the index method."

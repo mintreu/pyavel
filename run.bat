@@ -42,8 +42,8 @@ goto no_python_found
 
 :no_python_found
 :: No valid Python found, calling setup script
-echo No registered Python found, running Pyavel setup...
-call bramha\pyavel.bat
+echo No registered Python found, running python_resolver setup...
+call Pyavel\python_resolver.bat
 exit /b
 
 :eof

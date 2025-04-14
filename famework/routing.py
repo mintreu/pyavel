@@ -1,4 +1,4 @@
-# bramha/Route/Route.py
+# famework/routing/routing.py
 import os
 import importlib.util
 from typing import List, Dict
@@ -80,5 +80,5 @@ class RouteManager:
         return re.findall(r'{(\w+):\s*\w+}', path)
 
 
-# Global Route Singleton
+# Global routing Singleton
 Route = RouteManager()

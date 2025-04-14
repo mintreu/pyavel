@@ -1,0 +1,6 @@
+class {{name}}:
+    def __init__(self):
+        self.name = "{{name}}"
+
+    def save(self):
+        print(f"Saving {self.name}")

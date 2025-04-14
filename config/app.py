@@ -8,7 +8,7 @@ CONFIG = {
     #
 
     # The name of the application, which will be used for various purposes across the system.
-    "app_name": "Pyavel",  # The name of your application, typically used in branding or logging.
+    "app_name": "famework",  # The name of your application, typically used in branding or logging.
 
     # -----------------------------------------------------------------------------
     # Environment Settings
@@ -73,8 +73,8 @@ CONFIG = {
     #
 
     "providers": [
-        "bramha.kernel.Kernel",  # Core kernel for application bootstrapping.
-        "bramha.route.Router",   # Router provider for defining routes and handling HTTP requests.
+        "famework.kernel.Kernel",  # Core kernel for application bootstrapping.
+        "famework.route.Router",   # Router provider for defining routes and handling HTTP requests.
     ],
 
 
