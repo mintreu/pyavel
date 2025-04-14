@@ -2,7 +2,7 @@
 import os
 import sys
 
-from famework.Foundation.helpers import config, is_prod
+from zbackup.famework.Foundation.helpers import config, is_prod
 
 
 def ensure_root():
@@ -13,7 +13,7 @@ def ensure_root():
 
 ensure_root()
 
-from famework.bootstrap import initialize_framework
+from zbackup.famework.bootstrap import initialize_framework
 
 # ✅ Export app for uvicorn
 app = initialize_framework()

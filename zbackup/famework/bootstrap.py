@@ -4,8 +4,7 @@ import re
 from fastapi import FastAPI, Depends
 from functools import wraps
 
-from famework import routing
-from famework.routing import Route
+from zbackup.famework.routing import Route
 
 # Assign root directory (Parent of famework/)
 ROOT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -71,7 +70,7 @@ def initialize_framework() -> FastAPI:
     print("[*] Initializing famework famework via bootstrap...")
 
     # Load configurations
-    from famework.Foundation.Configuration.Configuration import load_config
+    from zbackup.famework.Foundation.Configuration.Configuration import load_config
     all_configs = load_config(ROOT_DIR)
 
     # Store in builtins for global access if needed
@@ -79,11 +78,10 @@ def initialize_framework() -> FastAPI:
     builtins.configs = all_configs
 
     # Load helper methods and pass the config
-    import famework.Foundation.helpers
-    famework.Foundation.helpers.load_helpers(ROOT_DIR, all_configs)
+    backup.famework.Foundation.helpers.load_helpers(ROOT_DIR, all_configs)
 
     # Register all helper functions into builtins
-    for name, func in inspect.getmembers(famework.Foundation.helpers, inspect.isfunction):
+    for name, func in inspect.getmembers(backup.famework.Foundation.helpers, inspect.isfunction):
         builtins.__dict__[name] = func
 
     print("[*] Global helper functions registered!")
